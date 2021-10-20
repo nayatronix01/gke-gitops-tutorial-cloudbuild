@@ -70,35 +70,6 @@ steps:
      sed "s/GOOGLE_CLOUD_PROJECT/${PROJECT_ID}/g" kubernetes.yaml.tpl | \
      sed "s/COMMIT_SHA/${SHORT_SHA}/g" > hello-cloudbuild-env/kubernetes.yaml
 
-
-
-# Access the id_github file from Secret Manager
-- name: gcr.io/cloud-builders/gcloud
-  entrypoint: 'bash'
-  args: [ '-c', 'gcloud secrets versions access latest --secret=github-ssh-key > /root/.ssh/id_github' ]
-  volumes:
-  - name: 'ssh'
-    path: /root/.ssh
-
-# Set up git with key and domain
-- name: 'gcr.io/cloud-builders/git'
-  entrypoint: 'bash'
-  args:
-  - '-c'
-  - |
-    chmod 600 /root/.ssh/id_github
-    cat <<EOF >/root/.ssh/config
-    Hostname github.com
-    IdentityFile /root/.ssh/id_github
-    EOF
-    ssh-keyscan -t rsa github.com > /root/.ssh/known_hosts
-  volumes:
-  - name: 'ssh'
-    path: /root/.ssh
-
-
-
-
 # This step pushes the manifest back to hello-cloudbuild-env
 - name: 'gcr.io/cloud-builders/git'
 #- name: 'gcr.io/cloud-builders/gcloud'
@@ -114,7 +85,5 @@ steps:
     Built from commit ${COMMIT_SHA} of repository hello-cloudbuild-app
     Author: $(git log --format='%an <%ae>' -n 1 HEAD)" && \
     git push origin candidate
-  volumes:
-  - name: 'ssh'
-    path: /root/.ssh
+
 # [END cloudbuild-trigger-cd]
