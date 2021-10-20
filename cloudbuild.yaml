@@ -51,7 +51,7 @@ steps:
   - '-c'
   #- clone
   #- --recurse-submodules
-  - git@github.com:nayatronix01/gke-gitops-tutorial-cloudbuild
+  #- git@github.com:nayatronix01/gke-gitops-tutorial-cloudbuild
   - |
     #gcloud source repos clone hello-cloudbuild-env && \
     git clone https://github.com/nayatronix01/gke-gitops-tutorial-cloudbuild.git hello-cloudbuild-env
