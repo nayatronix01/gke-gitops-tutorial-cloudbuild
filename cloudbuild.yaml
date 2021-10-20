@@ -49,8 +49,8 @@ steps:
   entrypoint: /bin/sh
   args:
   - '-c'
-  - clone
-  - --recurse-submodules
+  #- clone
+  #- --recurse-submodules
   - git@github.com:nayatronix01/gke-gitops-tutorial-cloudbuild
   - |
     #gcloud source repos clone hello-cloudbuild-env && \
