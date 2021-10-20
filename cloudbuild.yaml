@@ -42,14 +42,15 @@ steps:
 # [END cloudbuild]
 
 # [START cloudbuild-trigger-cd]
-# This step clones the hello-cloudbuild-env repository
+# This step clones the hello-cloudbuild-env repository from GitHub
 - name: 'gcr.io/cloud-builders/gcloud'
   id: Clone env repository
   entrypoint: /bin/sh
   args:
   - '-c'
   - |
-    gcloud source repos clone hello-cloudbuild-env && \
+    #gcloud source repos clone hello-cloudbuild-env && \
+    git clone https://github.com/nayatronix01/gke-gitops-tutorial-cloudbuild.git hello-cloudbuild-env
     cd hello-cloudbuild-env && \
     git checkout candidate && \
     git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
