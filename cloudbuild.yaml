@@ -115,14 +115,14 @@ steps:
 # This step pushes the manifest back to staging repo
 - name: 'gcr.io/cloud-builders/git'
   id: Push manifest
-  #entrypoint: /bin/sh
+  entrypoint: git 
   args:
   - |
     #git add kubernetes.yaml staging && \
     #git commit -m "Deploying image gcr.io/${PROJECT_ID}/hello-cloudbuild:${SHORT_SHA}
     #Built from commit ${COMMIT_SHA} of repository hello-cloudbuild-app staging
     #Author: $(git log --format='%an <%ae>' -n 1 HEAD)" && \
-    git push origin staging 
+    push origin staging 
   #volumes:
   #- name: 'ssh'
   #  path: /root/.ssh
