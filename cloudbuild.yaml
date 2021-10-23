@@ -127,8 +127,12 @@ steps:
     Author: $(git log --format='%an <%ae>' -n 1 HEAD)" 
 
 - name: 'gcr.io/cloud-builders/git'
+  id: Switch to staging branch 
   args: ['checkout', '-b', 'staging'] 
-  #args: ['push', 'origin', 'staging'] 
+  
+- name: 'gcr.io/cloud-builders/git'
+  id: Push manifest to staging branch
+  args: ['push', 'origin', 'staging'] 
 
 # [END cloudbuild-trigger-cd]
 
