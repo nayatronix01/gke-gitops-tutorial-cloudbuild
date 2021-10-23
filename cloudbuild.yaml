@@ -46,7 +46,6 @@ steps:
 
   
 - name: 'gcr.io/cloud-builders/git'
-#- name: 'gcr.io/cloud-builders/gcloud'
   id: Clone staging repository from GitHub
   entrypoint: /bin/sh
   args:
