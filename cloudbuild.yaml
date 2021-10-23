@@ -127,11 +127,13 @@ steps:
     Author: $(git log --format='%an <%ae>' -n 1 HEAD)" 
 
 - name: 'gcr.io/cloud-builders/git'
+  entrypoint: git 
   id: Switch to staging branch 
   args: ['checkout', '-b', 'staging'] 
   
 - name: 'gcr.io/cloud-builders/git'
   id: Push manifest to staging branch
+  entrypoint: git
   args: ['push', '--set-upstream', 'origin', 'staging'] 
   volumes:
   - name: 'ssh'
