@@ -116,9 +116,9 @@ steps:
 - name: 'gcr.io/cloud-builders/git'
   id: Push manifest
   #entrypoint: git 
-  args: ['add', 'kubernetes.yaml', 'staging']
-  args: ['commit -m "Deploying image gcr.io/${PROJECT_ID}/hello-cloudbuild:${SHORT_SHA} Built from commit ${COMMIT_SHA} of repository hello-cloudbuild-app staging Author: $(git log --format='%an <%ae>' -n 1 HEAD)"'] 
-  args: ['push', 'origin', 'staging'] 
+  args: ['add', 'kubernetes.yaml', 'staging'] ,
+        ['commit -m "Deploying image gcr.io/${PROJECT_ID}/hello-cloudbuild:${SHORT_SHA} Built from commit ${COMMIT_SHA} of repository hello-cloudbuild-app staging Author: $(git log --format='%an <%ae>' -n 1 HEAD)"'], 
+        ['push', 'origin', 'staging'] 
   #- | 
     #git add kubernetes.yaml staging 
     #git commit -m "Deploying image gcr.io/${PROJECT_ID}/hello-cloudbuild:${SHORT_SHA}
