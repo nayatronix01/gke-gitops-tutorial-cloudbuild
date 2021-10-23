@@ -118,7 +118,7 @@ steps:
   entrypoint: git 
   args: 
   - 
-    git add kubernetes.yaml staging ,
+    git add kubernetes.yaml staging 
     git commit -m "Deploying image gcr.io/${PROJECT_ID}/hello-cloudbuild:${SHORT_SHA}
     Built from commit ${COMMIT_SHA} of repository hello-cloudbuild-app staging
     Author: $(git log --format='%an <%ae>' -n 1 HEAD)" 
