@@ -123,7 +123,7 @@ steps:
     Built from commit ${COMMIT_SHA} of repository hello-cloudbuild-app staging
     Author: $(git log --format='%an <%ae>' -n 1 HEAD)" && \
     #git push origin staging
-    ['push', 'origin', 'staging'] 
+    'push', 'origin', 'staging' 
   volumes:
     name: 'ssh'
     path: /root/.ssh
