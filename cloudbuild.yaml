@@ -128,7 +128,7 @@ steps:
 
 - name: 'gcr.io/cloud-builders/git'
   args: ['checkout', ' staging'] 
-  args: ['push', 'origin', 'staging'] 
+  #args: ['push', 'origin', 'staging'] 
 
 # [END cloudbuild-trigger-cd]
 
