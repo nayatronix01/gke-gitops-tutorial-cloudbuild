@@ -1,0 +1,133 @@
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# [START cloudbuild]
+steps:
+# This step runs the unit tests on the app
+- name: 'python:3.7-slim'
+  id: Test
+  entrypoint: /bin/sh
+  args:
+  - -c
+  - 'pip install flask && python test_app.py -v'
+
+# This step builds the container image.
+- name: 'gcr.io/cloud-builders/docker'
+  id: Build
+  args:
+  - 'build'
+  - '-t'
+  - 'gcr.io/$PROJECT_ID/hello-cloudbuild:$SHORT_SHA'
+  - '.'
+
+# This step pushes the image to Container Registry
+# The PROJECT_ID and SHORT_SHA variables are automatically
+# replaced by Cloud Build.
+- name: 'gcr.io/cloud-builders/docker'
+  id: Push
+  args:
+  - 'push'
+  - 'gcr.io/$PROJECT_ID/hello-cloudbuild:$SHORT_SHA'
+# [END cloudbuild]
+
+# [START cloudbuild-trigger-cd]
+# This step clones the hello-cloudbuild-env repository from GitHub
+
+  
+- name: 'gcr.io/cloud-builders/git'
+  id: Clone staging repository from GitHub
+  entrypoint: /bin/sh
+  args:
+  - '-c'
+  #- clone
+  #- --recurse-submodules
+  #- git@github.com:nayatronix01/gke-gitops-tutorial-cloudbuild
+  - |
+    #gcloud source repos clone hello-cloudbuild-env && \
+    git clone https://github.com/nayatronix01/gke-gitops-tutorial-cloudbuild.git staging 
+    cd staging && \
+    git checkout staging && \
+    git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
+    #git config --global user.name "Your Name Here"
+
+# This step clones the staging repository from Container Source Registry
+#- name: 'gcr.io/cloud-builders/gcloud'
+#  id: Clone env repository
+#  entrypoint: /bin/sh
+#  args:
+#  - '-c'
+#  - |
+#    git clone *.*  hello-cloud-env
+#    #gcloud source repos clone hello-cloudbuild-env && \
+#    cd hello-cloudbuild-env && \
+#    git checkout candidate && \
+#    git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
+
+# This step generates the new manifest
+- name: 'gcr.io/cloud-builders/gcloud'
+  id: Generate manifest
+  entrypoint: /bin/sh
+  args:
+  - '-c'
+  - |
+     sed "s/GOOGLE_CLOUD_PROJECT/${PROJECT_ID}/g" kubernetes.yaml.tpl | \
+     sed "s/COMMIT_SHA/${SHORT_SHA}/g" > staging/kubernetes.yaml
+
+
+# Access the id_github file from Secret Manager
+- name: gcr.io/cloud-builders/gcloud
+  id: Access the id_github file from Secret Manager 
+  entrypoint: 'bash'
+  args: [ '-c', 'gcloud secrets versions access latest --secret=github-ssh-key > /root/.ssh/id_github' ]
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+# Set up git with key and domain
+- name: 'gcr.io/cloud-builders/git'
+  id: Set up git with key and domain 
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    chmod 600 /root/.ssh/id_github
+    cat <<EOF >/root/.ssh/config
+    Hostname github.com
+    IdentityFile /root/.ssh/id_github
+    EOF
+    ssh-keyscan -t rsa github.com > /root/.ssh/known_hosts
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+
+# This step pushes the manifest back to staging repo
+- name: 'gcr.io/cloud-builders/git'
+  id: Push manifest
+  entrypoint: /bin/sh
+  args:
+  - '-c'
+  - |
+    set -x && \
+    cd staging && \
+    git add kubernetes.yaml && \
+    git commit -m "Deploying image gcr.io/${PROJECT_ID}/hello-cloudbuild:${SHORT_SHA}
+    Built from commit ${COMMIT_SHA} of repository hello-cloudbuild-app
+    Author: $(git log --format='%an <%ae>' -n 1 HEAD)" && \
+    git push origin staging
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+# [END cloudbuild-trigger-cd]
