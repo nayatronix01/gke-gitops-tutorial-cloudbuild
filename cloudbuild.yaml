@@ -47,7 +47,7 @@ steps:
   
 - name: 'gcr.io/cloud-builders/git'
 #- name: 'gcr.io/cloud-builders/gcloud'
-  id: Clone env repository from GitHub
+  id: Clone staging repository from GitHub
   entrypoint: /bin/sh
   args:
   - '-c'
@@ -58,7 +58,7 @@ steps:
     #gcloud source repos clone hello-cloudbuild-env && \
     git clone https://github.com/nayatronix01/gke-gitops-tutorial-cloudbuild.git staging 
     cd staging && \
-    git checkout stagin && \
+    git checkout staging && \
     git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
     #git config --global user.name "Your Name Here"
 
