@@ -118,8 +118,12 @@ steps:
   #entrypoint: /bin/sh
   args:
   - 'push'
+<<<<<<< HEAD
   #- 'https://source.developers.google.com/p/$PROJECT_ID/r/$REPO'
   - 'https://github.com/nayatronix01/gke-gitops-tutorial-cloudbuild.git'
+=======
+  - 'https://source.developers.google.com/p/$PROJECT_ID/r/$REPO'
+>>>>>>> c8373e0584cc82f0b3796d65158a9d6154457984
   - 'staging'
   - |
     set -x && \
