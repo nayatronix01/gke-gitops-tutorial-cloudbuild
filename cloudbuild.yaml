@@ -127,7 +127,8 @@ steps:
     Author: $(git log --format='%an <%ae>' -n 1 HEAD)" 
 
 - name: 'gcr.io/cloud-builders/git'
-  #args: ['push', 'https://source.developers.google.com/p/$PROJECT_ID/r/$REPO', 'staging'] 
-  args: ['push']
+  args: ['branch']
+  #args: ['push', 'origin', 'staging'] 
+
 # [END cloudbuild-trigger-cd]
 
