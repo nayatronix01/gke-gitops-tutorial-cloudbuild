@@ -133,6 +133,8 @@ steps:
 - name: 'gcr.io/cloud-builders/git'
   id: Push manifest to staging branch
   args: ['push', '--set-upstream', 'origin', 'staging'] 
-
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
 # [END cloudbuild-trigger-cd]
 
