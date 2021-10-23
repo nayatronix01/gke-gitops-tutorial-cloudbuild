@@ -117,14 +117,6 @@ steps:
   id: Push manifest
   #entrypoint: /bin/sh
   args:
-  - 'push'
-<<<<<<< HEAD
-  #- 'https://source.developers.google.com/p/$PROJECT_ID/r/$REPO'
-  - 'https://github.com/nayatronix01/gke-gitops-tutorial-cloudbuild.git'
-=======
-  - 'https://source.developers.google.com/p/$PROJECT_ID/r/$REPO'
->>>>>>> c8373e0584cc82f0b3796d65158a9d6154457984
-  - 'staging'
   - |
     set -x && \
     cd staging && \
@@ -132,7 +124,11 @@ steps:
     git commit -m "Deploying image gcr.io/${PROJECT_ID}/hello-cloudbuild:${SHORT_SHA}
     Built from commit ${COMMIT_SHA} of repository hello-cloudbuild-app staging
     Author: $(git log --format='%an <%ae>' -n 1 HEAD)" && \
-    git push origin staging
+  - 'push'
+  #- 'https://source.developers.google.com/p/$PROJECT_ID/r/$REPO'
+  #- 'https://github.com/nayatronix01/gke-gitops-tutorial-cloudbuild.git'
+  - 'origin'
+  - 'staging'
   volumes:
   - name: 'ssh'
     path: /root/.ssh
