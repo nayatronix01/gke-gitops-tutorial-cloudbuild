@@ -118,7 +118,6 @@ steps:
   #entrypoint: /bin/sh
   args:
   - |
-    #set -x && \
     cd staging && \
     git add kubernetes.yaml && \
     git commit -m "Deploying image gcr.io/${PROJECT_ID}/hello-cloudbuild:${SHORT_SHA}
